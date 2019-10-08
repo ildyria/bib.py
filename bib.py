@@ -208,6 +208,9 @@ def authors(s):
             out += ''.rjust(20) + list_authors[i]
     return out
 
+def block_to_referer(block):
+    return block['referer']
+
 def generate_entry(block, summary):
     output = '\n';
     kind = block['kind'].upper();
@@ -287,6 +290,17 @@ def chose_file(fn = ''):
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1", "y")
 
+def list_duplicate_referer(blocks):
+    mapped = [block_to_referer(b) for b in blocks];
+    duplicates = [Orange('\t{}'.format(r)) for r in mapped if mapped.count(r) > 1];
+    if len(duplicates) == 0:
+        print(Green("No duplicate referers found."))
+    else:
+        print(Orange("Duplicates referers:"));
+        for t in set(duplicates):
+            print(t) 
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Normalize a decently formatted bibtex.')
     parser.add_argument('input', nargs='?', default='', help='input: file.bib', type=check_bib)
@@ -299,6 +313,7 @@ def parse_arguments():
     parser.add_argument('-i','--interactive', action='store_true', help='Interactive.')
     parser.add_argument('-y','--yes', action='store_true', help='Override Interactive and select default answer.')
     parser.add_argument('-dr','--dry-run', action='store_true', help='Dry-run.')
+    parser.add_argument('-l','--list-duplicates', action='store_true', help='List duplicate referers.')
     args = parser.parse_args()
 
     # print(args)
@@ -312,6 +327,7 @@ def parse_arguments():
         config['input'] = args.input
         config['output'] = args.output if args.output != '' else args.input
         config['dry_run'] = args.dry_run
+        config['list-duplicates'] = args.list_duplicates
         debug(args)
         debug(config)
         return
@@ -423,4 +439,8 @@ def main():
 
     for s in summary:
         print(s)
+
+    if config['list-duplicates']:
+        list_duplicate_referer(blocks);
+
 main();
