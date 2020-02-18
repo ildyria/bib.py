@@ -108,7 +108,7 @@ def find_block(data, i, list_block):
 def find_subblock_end(block, i):
     if len(block) == i:
         return i - 1
-    if block[i][-2:] == '},':
+    if block[i][-2:] == '},' or block[i][-2:] == '",':
         return i
     else:
         return find_subblock_end(block, i + 1)
@@ -121,14 +121,17 @@ def find_subblock(block, i, list_subblock):
 
     idx = block[i].find('=');
     if idx != -1:
-
         idx2 = block[i].find('{');
         if idx2 != -1:
             end = find_subblock_end(block, i)
         else:
-            end = i
+            idx2 = block[i].find('"');
+            if idx2 != -1:
+            	end = find_subblock_end(block, i)
+            else:
+            	end = i
         list_subblock.append([i,end,idx])
-        return find_subblock(block, end+1 , list_subblock)
+        return find_subblock(block, end+1, list_subblock)
     else:
         print(Red("this should not happen"))
         return list_subblock;
@@ -367,6 +370,7 @@ def parse_arguments():
         config['purify'] = args.purify
         config['output'] = args.output if args.output != '' else config['input']
         config['dry_run'] = args.dry_run
+        config['list-duplicates'] = args.list_duplicates
     else:
         v = args.verbose
         tmp = input('Enable verbose mode [{}]? '.format('Y/n' if v else 'y/N'))
@@ -386,6 +390,9 @@ def parse_arguments():
         v = args.dry_run
         tmp = input('Dry-run [{}]? '.format('Y/n' if v else 'y/N'))
         config['dry_run'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
+        v = args.list_duplicates
+        tmp = input('List duplicates [{}]? '.format('Y/n' if v else 'y/N'))
+        config['list-duplicates'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
 
         fn = args.output if args.output != '' else config['input']
         fn = input('Output file [{}]:'.format(fn))
@@ -441,6 +448,6 @@ def main():
         print(s)
 
     if config['list-duplicates']:
-        list_duplicate_referer(blocks);
+    	list_duplicate_referer(blocks);
 
 main();
