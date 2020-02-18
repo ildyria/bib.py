@@ -267,7 +267,7 @@ def generate_entry(block, summary):
             for b in block['sections']:
                 diagnostic(LightPurple('extra field:'.ljust(17)) + b[0].ljust(13) + b[1])
                 if not config['purify']:
-                    output += '  _{:14}= {},\n'.format(b[0],b[1])
+                    output += '  {}{:14}= {},\n'.format('_' if config['dirty'] else '',b[0],b[1])
 
         diagnostic(DarkGray('{}---------------------------'.format('done'.ljust(9,'-'))))
 
@@ -301,8 +301,11 @@ def list_duplicate_referer(blocks):
     else:
         print(Orange("Duplicates referers:"));
         for t in set(duplicates):
-            print(t) 
+            print(t)
 
+def ask(question, default):
+    tmp = input('{} [{}]? '.format(question, 'Y/n' if default else 'y/N'));
+    return str2bool(tmp if tmp != '' else ('Y' if default else 'n'));
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Normalize a decently formatted bibtex.')
@@ -313,13 +316,13 @@ def parse_arguments():
     parser.add_argument('--no-summary', action='store_true', help='Don\'t check for missing fields (only mandatory)')
     parser.add_argument('--extend', action='store_true', help='if a field is missing, add it to the generated bibtex.')
     parser.add_argument('-p','--purify', action='store_true', help='extra fields are stripped from the generated bibtex.')
+    parser.add_argument('-d','--dirty', action='store_true', help='extra fields are prepadded with "_".')
     parser.add_argument('-i','--interactive', action='store_true', help='Interactive.')
     parser.add_argument('-y','--yes', action='store_true', help='Override Interactive and select default answer.')
     parser.add_argument('-dr','--dry-run', action='store_true', help='Dry-run.')
     parser.add_argument('-l','--list-duplicates', action='store_true', help='List duplicate referers.')
     args = parser.parse_args()
 
-    # print(args)
     interactive = args.interactive or args.input == ''
     if not interactive:
         config['debug'] = args.verbose
@@ -327,12 +330,11 @@ def parse_arguments():
         config['summary'] = not args.no_summary
         config['extend'] = args.extend
         config['purify'] = args.purify
+        config['dirty'] = not args.dirty
         config['input'] = args.input
         config['output'] = args.output if args.output != '' else args.input
         config['dry_run'] = args.dry_run
         config['list-duplicates'] = args.list_duplicates
-        debug(args)
-        debug(config)
         return
 
     # we are in interactive mode
@@ -368,31 +370,20 @@ def parse_arguments():
         config['summary'] = not args.no_summary
         config['extend'] = args.extend
         config['purify'] = args.purify
+        config['dirty'] = not args.dirty
         config['output'] = args.output if args.output != '' else config['input']
         config['dry_run'] = args.dry_run
         config['list-duplicates'] = args.list_duplicates
     else:
-        v = args.verbose
-        tmp = input('Enable verbose mode [{}]? '.format('Y/n' if v else 'y/N'))
-        config['debug'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = args.diagnostic
-        tmp = input('Enable Diagnostics [{}]? '.format('Y/n' if v else 'y/N'))
-        config['diagnostic'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = not args.no_summary
-        tmp = input('Enable Summary [{}]? '.format('Y/n' if v else 'y/N'))
-        config['summary'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = args.extend
-        tmp = input('Add missing field [{}]? '.format('Y/n' if v else 'y/N'))
-        config['extend'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = args.purify
-        tmp = input('Remove unnecessary fields [{}]? '.format('Y/n' if v else 'y/N'))
-        config['purify'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = args.dry_run
-        tmp = input('Dry-run [{}]? '.format('Y/n' if v else 'y/N'))
-        config['dry_run'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
-        v = args.list_duplicates
-        tmp = input('List duplicates [{}]? '.format('Y/n' if v else 'y/N'))
-        config['list-duplicates'] = str2bool(tmp if tmp != '' else ('Y' if v else 'n'))
+        config['debug'] = ask('Enable verbose mode', args.verbose)
+        config['diagnostic'] = ask('Enable Diagnostics', args.diagnostic)
+        config['summary'] = ask('Enable Summary', not args.no_summary)
+        config['extend'] = ask('Add missing field', args.extend)
+        config['purify'] = ask('Remove unnecessary fields', args.purify)
+        if not config['purify']:
+            config['dirty'] = ask('Prepad unnecessary fields with "_"', not args.dirty)
+        config['dry_run'] = ask('Dry-run', args.dry_run)
+        config['list-duplicates'] = ask('List duplicates', args.list_duplicates)
 
         fn = args.output if args.output != '' else config['input']
         fn = input('Output file [{}]:'.format(fn))
@@ -440,7 +431,8 @@ def main():
         print(output)
     else:
         if config['input'] == config['output']:
-            print(DarkGray('Input file is the same as output file, we will generate a backup at {}.bck'.format(config['input'])))
+            print(Orange('Input file name is the same as output file name.'))
+            print(DarkGray('we will generate a backup at {}.bck'.format(config['input'])))
             os.rename(config['input'], config['input']+'.bck')
         save(config['output'], output)
 
