@@ -11,33 +11,33 @@ config = {}
 # in short: https://nwalsh.com/tex/texhelp/bibtx-7.html
 BIBTEX = {
     # An article from a journal or magazine.
-    'ARTICLE': [['author', 'title', 'journal', 'year'], ['volume', 'number', 'pages', 'month', 'note']],
+    'ARTICLE': [['author', 'title', 'journal', 'year'], ['volume', 'number', 'pages', 'month', 'note', 'keywords']],
     # A book with an explicit publisher.
-    'BOOK': [['author', 'editor', 'title', 'publisher', 'year'], ['volume', 'number', 'series', 'address', 'edition', 'month', 'note']],
+    'BOOK': [['author', 'editor', 'title', 'publisher', 'year'], ['volume', 'number', 'series', 'address', 'edition', 'month', 'note', 'keywords']],
     # A book with an explicit publisher.
-    'BOOKLET': [['author', 'editor', 'title', 'publisher', 'year'], ['volume', 'number', 'series', 'address', 'edition', 'month', 'note']],
+    'BOOKLET': [['author', 'editor', 'title', 'publisher', 'year'], ['volume', 'number', 'series', 'address', 'edition', 'month', 'note', 'keywords']],
     # An article in a conference proceedings.
-    'CONFERENCE': [['author', 'title', 'booktitle', 'year'], ['editor', 'volume', 'number','series', 'pages', 'address', 'month', 'organization', 'publisher', 'note']],
+    'CONFERENCE': [['author', 'title', 'booktitle', 'year'], ['editor', 'volume', 'number','series', 'pages', 'address', 'month', 'organization', 'publisher', 'note', 'keywords']],
     # A part of a book, which may be a chapter.
-    'INBOOK': [['author', 'editor', 'title', 'chapter', 'pages', 'publisher', 'year'], ['volume', 'number', 'series', 'type', 'address', 'edition', 'month', 'note']],
+    'INBOOK': [['author', 'editor', 'title', 'chapter', 'pages', 'publisher', 'year'], ['volume', 'number', 'series', 'type', 'address', 'edition', 'month', 'note', 'keywords']],
     # A book with an explicit publisher.
-    'INCOLLECTION': [['author', 'title', 'booktitle', 'publisher', 'year'], ['editor', 'volume', 'number', 'series', 'type', 'chapter', 'pages', 'address', 'edition', 'month', 'note']],
+    'INCOLLECTION': [['author', 'title', 'booktitle', 'publisher', 'year'], ['editor', 'volume', 'number', 'series', 'type', 'chapter', 'pages', 'address', 'edition', 'month', 'note', 'keywords']],
     # An article in a conference proceedings.
-    'INPROCEEDINGS': [['author', 'title', 'booktitle', 'year'], ['editor', 'volume', 'number','series', 'pages', 'address', 'month', 'organization', 'publisher', 'note']],
+    'INPROCEEDINGS': [['author', 'title', 'booktitle', 'year'], ['editor', 'volume', 'number','series', 'pages', 'address', 'month', 'organization', 'publisher', 'note', 'keywords']],
     # Technical documentation
-    'MANUAL': [['title'], ['author', 'organization', 'address', 'edition', 'month', 'year', 'note']],
+    'MANUAL': [['title'], ['author', 'organization', 'address', 'edition', 'month', 'year', 'note', 'keywords']],
     # A Master’s thesis
-    'MASTERSTHESIS': [['author', 'title', 'school', 'year'], ['type', 'address', 'month', 'note']],
+    'MASTERSTHESIS': [['author', 'title', 'school', 'year'], ['type', 'address', 'month', 'note', 'keywords']],
     # Use this type when nothing else fits
-    'MISC': [[], ['author', 'title', 'howpublished', 'month', 'year', 'note']],
+    'MISC': [[], ['author', 'title', 'howpublished', 'month', 'year', 'note', 'keywords']],
     # A PhD thesis
-    'PHDTHESIS': [['author', 'title', 'school', 'year'], ['type', 'address', 'month', 'note']],
+    'PHDTHESIS': [['author', 'title', 'school', 'year'], ['type', 'address', 'month', 'note', 'keywords']],
     # The proceedings of a conference.
-    'PROCEEDINGS': [['title', 'year'], ['editor', 'volume', 'number','series', 'address', 'month', 'organization', 'publisher', 'note']],
+    'PROCEEDINGS': [['title', 'year'], ['editor', 'volume', 'number','series', 'address', 'month', 'organization', 'publisher', 'note', 'keywords']],
     # A document having an author and title, but not formally published
-    'TECHREPORT': [['author', 'title', 'institution', 'year'], ['type', 'number', 'address', 'month', 'note']],
+    'TECHREPORT': [['author', 'title', 'institution', 'year'], ['type', 'number', 'address', 'month', 'note', 'keywords']],
     # A document having an author and title, but not formally published
-    'UNPUBLISHED': [['author', 'title', 'note'], ['month', 'year']],
+    'UNPUBLISHED': [['author', 'title', 'note'], ['month', 'year', 'keywords']],
 }
 
 
